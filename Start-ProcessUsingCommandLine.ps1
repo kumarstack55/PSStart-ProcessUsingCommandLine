@@ -65,7 +65,7 @@
     }
 
     # Start the process.
-    $operation = "FilePath: <$filePath>, ArgumentList: <$(($argumentList | ForEach-Object { "<$_>" }) -join ', ')>"
+    $operation = "FilePath: <$filePath>, ArgumentList: $(($argumentList | ForEach-Object { "<$_>" }) -join ', ')"
     if ($PSCmdlet.ShouldProcess("Start-Process", $operation)) {
         if ($argumentList.Count -eq 0) {
             Start-Process -FilePath $filePath
