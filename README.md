@@ -32,6 +32,20 @@ Start-ProcessUsingCommandLine -CommandLine 'uv run sphinx-autobuild .\source\ .\
 Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "& { while ($true) { Get-Date; Start-Sleep 1; } }"'
 ```
 
+## For more convinient way to load function
+
+This is a method for loading remote code without installing it.
+
+```powershell
+$func = & { $ProgressPreference = 'SilentlyContinue'; $u = "https://raw.githubusercontent.com/kumarstack55/PSStart-ProcessUsingCommandLine/refs/heads/main/Start-ProcessUsingCommandLine.ps1"; $r = Invoke-WebRequest -Uri $u; $c = $r | Select-Object -ExpandProperty Content; $c -replace "^\uFEFF", ""; }; Invoke-Expression "$func"
+
+Start-ProcessUsingCommandLine -CommandLine 'notepad.exe'
+```
+
+> **NOTE**
+>
+> Please note that loading remote code is generally not a secure practice.
+
 ## LICENSE
 
 MIT
