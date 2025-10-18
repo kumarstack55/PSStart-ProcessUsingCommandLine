@@ -25,10 +25,11 @@ git clone https://github.com/kumarstack55/PSStart-ProcessUsingCommandLine.git
 Set-Location .\PSStart-ProcessUsingCommandLine\
 . .\Start-ProcessUsingCommandLine.ps1
 
+# Example: Automatically build Sphinx documentation in a new window.
+Start-ProcessUsingCommandLine -CommandLine 'uv run sphinx-autobuild .\source\ .\_build\html --open-browser'
+
 # Example: Execute commands periodically in a new window.
 Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "& { while ($true) { Get-Date; Start-Sleep 1; } }"'
-
-# Example:
 ```
 
 ## LICENSE
