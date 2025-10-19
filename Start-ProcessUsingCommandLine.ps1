@@ -24,15 +24,15 @@
     Start-ProcessUsingCommandLine -CommandLine '"C:\Program Files\teraterm5\ttermpro.exe" ssh://user@host:22 ; comment'
 
 .EXAMPLE
-    Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "& { while ($true) { Get-Date; Start-Sleep 1; } }"'
+    Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "while ($true) { Get-Date; Start-Sleep 1; }"'
 
 .NOTES
     DO NOT PROVIDE COMMAND LINES THAT TAKE INPUT FROM UNTRUSTED SOURCES.
 
 .NOTES
-    Token parsing may yield unexpected results. For example, IP addresses may be interpreted as PowerShell expressions. To verify whether this is as expected, use the `-WhatIf` option such like `Start-ProcessUsingCommandLine -CommandLine "`"C:\path\to\dig.exe`" -x 1.1.1.1" -WhatIf`.
+    Token parsing may yield unexpected results. For example, IP addresses may be interpreted as PowerShell expressions. To verify whether this is as expected, use the `-WhatIf` option such like ``Start-ProcessUsingCommandLine -CommandLine "`"C:\path\to\dig.exe`" -x 1.1.1.1" -WhatIf``.
 
-    If unexpected behavior occurs, explicitly enclose the token in double quotes. For instance, instead of `"C:\path\to\dig.exe`" -x 1.1.1.1`, you may need to use `"C:\path\to\dig.exe`" -x "1.1.1.1"`.
+    If unexpected behavior occurs, explicitly enclose the token in double quotes. For instance, you may need to use ``Start-ProcessUsingCommandLine -CommandLine "`"C:\path\to\dig.exe`" -x `"1.1.1.1`"" -WhatIf``.
 
 .LINK
     https://github.com/kumarstack55/PSStart-ProcessUsingCommandLine.git
