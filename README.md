@@ -71,7 +71,7 @@ $code1 = @'
 $target = 'www.google.com'; while ($true) { $date = Get-Date -UFormat '%H:%M:%S'; ping -n 1 $target | Out-Null; $isOk = if ($?) { 'ok' } else { 'not ok' }; Write-Host "$date $target $isOk"; Start-Sleep 10; }
 '@
 
-# In this example, we later enclose it in double quotes like `-Command “...”`.
+# In this example, we later enclose it in double quotes like `-Command "..."`.
 # Therefore, we escape the double quotes inside.
 $code2 = $code1 -replace '"', '""'
 
