@@ -44,6 +44,22 @@
         [string]$CommandLine
     )
 
+    $getEscaped = {
+        param([Parameter(Mandatory)][string]$String)
+        $String -replace "'", "''"
+    }
+
+    $getOperation = {
+        param(
+            [Parameter(Mandatory)][string]$FilePath,
+            [Parameter(Mandatory)][AllowEmptyCollection()][string[]]$ArgumentList
+        )
+        $operation = "Start-Process -FilePath '$(& $getEscaped $FilePath)'"
+        $argumentListContent = ($ArgumentList | ForEach-Object { "'" + (& $getEscaped $_) + "'" }) -join ", "
+        if ($ArgumentList.Count -gt 0) { $operation += " -ArgumentList @($argumentListContent)" }
+        $operation
+    }
+
     # Tokenize the command line, ignoring comments.
     #
     # PSParser is primarily a class for syntax colorizations,
@@ -65,7 +81,7 @@
     }
 
     # Start the process.
-    $operation = "FilePath: <$filePath>, ArgumentList: $(($argumentList | ForEach-Object { "<$_>" }) -join ', ')"
+    $operation = & $getOperation -FilePath $filePath -ArgumentList $argumentList
     if ($PSCmdlet.ShouldProcess("Start-Process", $operation)) {
         if ($argumentList.Count -eq 0) {
             Start-Process -FilePath $filePath
