@@ -76,7 +76,7 @@ $target = 'www.google.com'; while ($true) { $date = Get-Date -UFormat '%H:%M:%S'
 $code2 = $code1 -replace '"', '""'
 
 # When representing strings with single quotes in PowerShell, you must escape any single quotes within the string.
-$code2 = $code2 -replace "'", "''"
+$code3 = $code2 -replace "'", "''"
 
 $code4 = @'
 Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "{0}"'
