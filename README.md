@@ -48,7 +48,7 @@ Start-ProcessUsingCommandLine -CommandLine `
 '"while ($true) { Get-Date -Format \""HH:mm:ss\""; Start-Sleep 1; }"')
 
 # Example: In Windows Terminal, specify a tab name and run commands
-# periodically in a new tab.
+# periodically in a new tab. Don't forget to escape the semicolon.
 Start-ProcessUsingCommandLine -CommandLine `
 ('wt.exe --window 0 new-tab --title "loop" powershell.exe -NoProfile -NoExit ' +
 '-Command "while ($true) { Get-Date -Format ''HH:mm:ss''\; Start-Sleep 1\; }"')
