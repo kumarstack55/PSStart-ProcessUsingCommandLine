@@ -54,6 +54,9 @@
             [Parameter(Mandatory)][string]$FilePath,
             [Parameter(Mandatory)][AllowEmptyCollection()][string[]]$ArgumentList
         )
+        $message = "FilePath: <${FilePath}> " + ($ArgumentList | ForEach-Object { "Argument: <$_>" }) -join ", "
+        Write-Verbose -Message $message
+
         $operation = "Start-Process -FilePath '$(& $getEscaped $FilePath)'"
         $argumentListContent = ($ArgumentList | ForEach-Object { "'" + (& $getEscaped $_) + "'" }) -join ", "
         if ($ArgumentList.Count -gt 0) { $operation += " -ArgumentList @($argumentListContent)" }
