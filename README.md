@@ -25,23 +25,40 @@ git clone https://github.com/kumarstack55/PSStart-ProcessUsingCommandLine.git
 Set-Location .\PSStart-ProcessUsingCommandLine\
 . .\Start-ProcessUsingCommandLine.ps1
 
-# Example: Start PowerShell in a separate window with the current directory as the working directory.
+# Example: Start PowerShell in a separate window with the current directory as
+# the working directory.
 Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile'
 
 # Example: Open README.txt in the current directory with Notepad.
 Start-ProcessUsingCommandLine -CommandLine 'notepad.exe .\README.txt'
 
 # Example: Automatically build Sphinx documentation in a new window.
-Start-ProcessUsingCommandLine -CommandLine 'uv run sphinx-autobuild .\source\ .\_build\html --open-browser'
+Start-ProcessUsingCommandLine -CommandLine `
+'uv run sphinx-autobuild .\source\ .\_build\html --open-browser'
+
+# Example: In Windows Terminal, specify the tab name to start the process of
+# automatically generating Sphinx documentation.
+Start-ProcessUsingCommandLine -CommandLine `
+('wt.exe --window 0 new-tab --title "sphinx-autobuild" -- ' +
+'uv run sphinx-autobuild .\source\ .\_build\html --open-browser')
 
 # Example: Execute commands periodically in a new window.
-Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "while ($true) { Get-Date -Format ""HH:mm:ss""; Start-Sleep 1; }"'
+Start-ProcessUsingCommandLine -CommandLine `
+('powershell.exe -NoProfile -NoExit -Command ' +
+'"while ($true) { Get-Date -Format \""HH:mm:ss\""; Start-Sleep 1; }"')
+
+# Example: In Windows Terminal, specify a tab name and run commands
+# periodically in a new tab.
+Start-ProcessUsingCommandLine -CommandLine `
+('wt.exe --window 0 new-tab --title "loop" powershell.exe -NoProfile -NoExit ' +
+'-Command "while ($true) { Get-Date -Format ''HH:mm:ss''\; Start-Sleep 1\; }"')
 
 # Example: Execute ping commands periodically in a new window.
-Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "$target = ''www.google.com''; while ($true) { $date = Get-Date -UFormat ''%H:%M:%S''; ping -n 1 $target | Out-Null; $isOk = if ($?) { ''ok'' } else { ''not ok'' }; Write-Host ""$date $target $isOk""; Start-Sleep 10; }"'
+Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -NoExit -Command "$target = ''www.google.com''; while ($true) { $date = Get-Date -UFormat ''%H:%M:%S''; ping -n 1 $target | Out-Null; $isOk = if ($?) { ''ok'' } else { ''not ok'' }; $message = \""$date $target $isOk\""; Write-Host $message; Start-Sleep 10; }"'
 
-# Example: By adding `-WhatIf`, you can see how it is being analyzed.
-Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "while ($true) { Get-Date -Format ""HH:mm:ss""; Start-Sleep 1; }"' -WhatIf
+# Example: By adding `-WhatIf` and `-Verbose`, you can see how it is being
+# analyzed.
+Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "while ($true) { Get-Date -Format ""HH:mm:ss""; Start-Sleep 1; }"' -WhatIf -Verbose
 ```
 
 ## For more convinient way to load function
@@ -67,27 +84,37 @@ Here's an example of escaping a one-liner.
 
 # This is a single line of code that runs a ping periodically.
 # Note that this code includes both single and double quotes.
-$code1 = @'
-$target = 'www.google.com'; while ($true) { $date = Get-Date -UFormat '%H:%M:%S'; ping -n 1 $target | Out-Null; $isOk = if ($?) { 'ok' } else { 'not ok' }; Write-Host "$date $target $isOk"; Start-Sleep 10; }
+
+$code = @'
+$target = 'www.google.com'; while ($true) { $date = Get-Date -UFormat '%H:%M:%S'; ping -n 1 $target | Out-Null; $isOk = if ($?) { 'ok' } else { 'not ok' }; $message = "$date $target $isOk"; Write-Host $message; Start-Sleep 10; }
 '@
 
+$codes = [System.collections.generic.List[string]]::new()
+$codes.Add($code)
+
 # In this example, we later enclose it in double quotes like `-Command "..."`.
-# Therefore, we escape the double quotes inside.
-$code2 = $code1 -replace '"', '""'
+# First, escape double quotes with a backslash.
+$codes.Add(($codes[$codes.Count - 1] -replace '"', '\"'))
+
+# Then, escape the double quotes inside them.
+$codes.Add(($codes[$codes.Count - 1] -replace '"', '""'))
 
 # When representing strings with single quotes in PowerShell, you must escape any single quotes within the string.
-$code3 = $code2 -replace "'", "''"
+$codes.Add(($codes[$codes.Count - 1] -replace "'", "''"))
 
-$code4 = @'
-Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "{0}"'
-'@ -f $code3
+$codes.Add(
+@'
+Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -NoExit -Command "{0}"'
+'@ -f $codes[$codes.Count - 1]
+)
 
-Write-Host $code4
+$escapedCode = $codes[$codes.Count - 1]
+Write-Host $escapedCode
 ```
 
 ```plaintext
-PS > Write-Host $code4
-Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "$target = ''www.google.com''; while ($true) { $date = Get-Date -UFormat ''%H:%M:%S''; ping -n 1 $target | Out-Null; $isOk = if ($?) { ''ok'' } else { ''not ok'' }; Write-Host ""$date $target $isOk""; Start-Sleep 10; }"'
+PS > Write-Host $escapedCode
+Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -NoExit -Command "$target = ''www.google.com''; while ($true) { $date = Get-Date -UFormat ''%H:%M:%S''; ping -n 1 $target | Out-Null; $isOk = if ($?) { ''ok'' } else { ''not ok'' }; $message = \""$date $target $isOk\""; Write-Host $message; Start-Sleep 10; }"'
 ```
 
 ## LICENSE
