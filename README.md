@@ -66,7 +66,7 @@ Start-ProcessUsingCommandLine -CommandLine 'powershell.exe -NoProfile -Command "
 This is a method for loading remote code without installing it.
 
 ```powershell
-$func = & { $ProgressPreference = 'SilentlyContinue'; $u = "https://raw.githubusercontent.com/kumarstack55/PSStart-ProcessUsingCommandLine/refs/heads/main/Start-ProcessUsingCommandLine.ps1"; $r = Invoke-WebRequest -Uri $u; $c = $r | Select-Object -ExpandProperty Content; $c -replace "^\uFEFF", ""; }; Invoke-Expression "$func"
+$func = & { $ProgressPreference = 'SilentlyContinue'; $u = "https://raw.githubusercontent.com/kumarstack55/PSStart-ProcessUsingCommandLine/refs/heads/main/Start-ProcessUsingCommandLine.ps1"; $r = Invoke-WebRequest -UseBasicParsing -Uri $u; $c = $r | Select-Object -ExpandProperty Content; $c -replace "^\uFEFF", ""; }; Invoke-Expression "$func"
 
 Start-ProcessUsingCommandLine -CommandLine "notepad.exe $HOME\Desktop\note.txt"
 ```
